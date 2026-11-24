@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Tante Florida en de Digitale Chaos</title>
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    color:white;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+.hero{
+    text-align:center;
+    padding:40px;
+}
+
+.hero h1{
+    font-size:3rem;
+    color:#38bdf8;
+}
+
+.character{
+    font-size:120px;
+}
+
+.progress{
+    width:100%;
+    height:25px;
+    background:#334155;
+    border-radius:20px;
+    overflow:hidden;
+    margin:20px 0;
+}
+
+.bar{
+    height:100%;
+    width:0%;
+    background:#22c55e;
+    transition:0.5s;
+}
+
+.card{
+    background:#1e293b;
+    padding:25px;
+    border-radius:20px;
+    margin-top:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.4);
+}
+
+button{
+    display:block;
+    width:100%;
+    margin-top:10px;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:#38bdf8;
+    color:white;
+    font-size:1rem;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#0ea5e9;
+}
+
+.badge{
+    display:inline-block;
+    background:gold;
+    color:black;
+    padding:8px 12px;
+    border-radius:20px;
+    margin:5px;
+}
+
+.info{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.infoBox{
+    flex:1;
+    min-width:200px;
+    background:#0f172a;
+    padding:15px;
+    border-radius:15px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<div class="hero">
+<div class="character">👵</div>
+
+<h1>Tante Florida</h1>
+
+<p>
+Help Tante Florida met internet,
+wifi, printers en andere digitale rampen.
+</p>
+</div>
+
+<div class="info">
+
+<div class="infoBox">
+<h3>⭐ XP</h3>
+<p id="xp">0</p>
+</div>
+
+<div class="infoBox">
+<h3>🏅 Badges</h3>
+<div id="badges"></div>
+</div>
+
+</div>
+
+<div class="progress">
+<div class="bar" id="bar"></div>
+</div>
+
+<div id="game" class="card"></div>
+
+</div>
+
+<script>
+
+let xp = 0;
+let level = 0;
+let badges = [];
+
+const levels = [
+
+{
+title:"🔌 Kabelpaniek",
+question:"Welke kabel gebruik je tussen router en laptop?",
+options:["Ethernet","HDMI","Stroomkabel"],
+correct:"Ethernet",
+badge:"Kabelkenner"
+},
+
+{
+title:"📶 Wifi Wachtwoord",
+question:"Wat is het sterkste wachtwoord?",
+options:[
+"123456",
+"wachtwoord",
+"T4nteFL0r!da2026"
+],
+correct:"T4nteFL0r!da2026",
+badge:"Wifi Wizard"
+},
+
+{
+title:"🖨 Printerdrama",
+question:"Waarom print een printer meestal niet?",
+options:[
+"Geen papier",
+"De printer is boos",
+"Er is geen maanlicht"
+],
+correct:"Geen papier",
+badge:"Printerheld"
+},
+
+{
+title:"📹 Videobellen",
+question:"Wat moet aanstaan zodat mensen je zien?",
+options:[
+"Bluetooth",
+"Camera",
+"Caps Lock"
+],
+correct:"Camera",
+badge:"Videoheld"
+},
+
+{
+title:"🛡 Cyberveiligheid",
+question:"Welke mail is waarschijnlijk phishing?",
+options:[
+"Bank vraagt wachtwoord via mail",
+"Nieuwsbrief",
+"Afspraakbevestiging"
+],
+correct:"Bank vraagt wachtwoord via mail",
+badge:"Cyber Ninja"
+}
+
+];
+
+function updateUI(){
+
+document.getElementById("xp").innerText = xp;
+
+document.getElementById("bar").style.width =
+(level / levels.length * 100) + "%";
+
+let html = "";
+
+badges.forEach(b => {
+html += `<span class="badge">${b}</span>`;
+});
+
+document.getElementById("badges").innerHTML = html;
+}
+
+function renderLevel(){
+
+if(level >= levels.length){
+
+document.getElementById("game").innerHTML = `
+
+<h2>🏆 Gefeliciteerd!</h2>
+
+<p>
+Tante Florida begrijpt eindelijk het verschil tussen een router, printer en broodrooster.
+</p>
+
+<h3>Eindscore: ${xp} XP</h3>
+
+<button onclick="restartGame()">
+Opnieuw spelen
+</button>
+
+`;
+
+return;
+}
+
+const current = levels[level];
+
+let buttons = "";
+
+current.options.forEach(option => {
+
+buttons += `
+<button onclick="checkAnswer('${option}')">
+${option}
+</button>`;
+});
+
+document.getElementById("game").innerHTML = `
+
+<h2>${current.title}</h2>
+
+<p>${current.question}</p>
+
+${buttons}
+
+`;
+}
+
+function checkAnswer(answer){
+
+let current = levels[level];
+
+if(answer === current.correct){
+
+xp += 100;
+
+if(!badges.includes(current.badge)){
+badges.push(current.badge);
+}
+
+alert(
+"✅ Goed gedaan! Tante Florida is trots op je."
+);
+
+level++;
+
+updateUI();
+
+renderLevel();
+
+}else{
+
+alert(
+"❌ Oeps! Tante Florida probeert nu internet via de broodrooster te krijgen."
+);
+
+}
+}
+
+function restartGame(){
+
+xp = 0;
+level = 0;
+badges = [];
+
+updateUI();
+renderLevel();
+}
+
+updateUI();
+renderLevel();
+
+</script>
+
+</body>
+</html>
